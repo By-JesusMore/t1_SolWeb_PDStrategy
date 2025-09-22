@@ -1,0 +1,34 @@
+<div class="card">
+  <h2>Demo: Strategy Pattern — Métodos de pago</h2>
+
+  <label>Monto (S/):
+    <input type="number" [(ngModel)]="amount" />
+  </label>
+
+  <div class="methods">
+    <label><input type="radio" name="method" value="card" [(ngModel)]="method" /> Tarjeta</label>
+    <label><input type="radio" name="method" value="paypal" [(ngModel)]="method" /> PayPal</label>
+    <label><input type="radio" name="method" value="crypto" [(ngModel)]="method" /> Cripto</label>
+  </div>
+
+  <div *ngIf="method === 'card'" class="method-form">
+    <input placeholder="Nombre en la tarjeta" [(ngModel)]="cardName" />
+    <input placeholder="Número de tarjeta" [(ngModel)]="cardNumber" />
+    <input placeholder="MM/AA" [(ngModel)]="cardExpiry" />
+    <input placeholder="CVV" [(ngModel)]="cardCVV" />
+  </div>
+
+  <div *ngIf="method === 'paypal'" class="method-form">
+    <input placeholder="Correo PayPal" [(ngModel)]="paypalEmail" />
+  </div>
+
+  <div *ngIf="method === 'crypto'" class="method-form">
+    <input placeholder="Dirección wallet" [(ngModel)]="walletAddress" />
+  </div>
+
+  <button (click)="pay()" [disabled]="loading">{{ loading ? 'Procesando...' : 'Pagar' }}</button>
+
+  <div class="result" *ngIf="resultMessage">
+    {{ resultMessage }}
+  </div>
+</div>
