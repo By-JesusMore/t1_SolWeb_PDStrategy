@@ -1,34 +1,112 @@
 <div class="card">
   <h2>Demo: Strategy Pattern — Métodos de pago</h2>
 
+  <!-- Errores de validación -->
+  <div *ngIf="validationErrors.length > 0" class="validation-errors">
+    <h4>❌ Errores de validación:</h4>
+    <ul>
+      <li *ngFor="let error of validationErrors">{{ error }}</li>
+    </ul>
+  </div>
+
   <label>Monto (S/):
-    <input type="number" [(ngModel)]="amount" />
+    <input 
+      type="number" 
+      [(ngModel)]="amount" 
+      min="1" 
+      max="10000"
+      [class.error]="hasAmountError()"
+    />
   </label>
 
   <div class="methods">
-    <label><input type="radio" name="method" value="card" [(ngModel)]="method" /> Tarjeta</label>
-    <label><input type="radio" name="method" value="paypal" [(ngModel)]="method" /> PayPal</label>
-    <label><input type="radio" name="method" value="crypto" [(ngModel)]="method" /> Cripto</label>
+    <label>
+      <input type="radio" name="method" value="card" [(ngModel)]="method" /> 
+      💳 Tarjeta de Crédito/Débito
+    </label>
+    <label>
+      <input type="radio" name="method" value="paypal" [(ngModel)]="method" /> 
+      💰 PayPal
+    </label>
+    <label>
+      <input type="radio" name="method" value="crypto" [(ngModel)]="method" /> 
+      ₿ Criptomonedas
+    </label>
   </div>
 
+  <!-- Formulario de Tarjeta -->
   <div *ngIf="method === 'card'" class="method-form">
-    <input placeholder="Nombre en la tarjeta" [(ngModel)]="cardName" />
-    <input placeholder="Número de tarjeta" [(ngModel)]="cardNumber" />
-    <input placeholder="MM/AA" [(ngModel)]="cardExpiry" />
-    <input placeholder="CVV" [(ngModel)]="cardCVV" />
+    <h3>💳 Datos de la Tarjeta</h3>
+    <input 
+      placeholder="Nombre completo en la tarjeta" 
+      [(ngModel)]="cardName"
+      [class.error]="hasNameError()"
+      maxlength="50"
+    />
+    <input 
+      placeholder="Número de tarjeta (1234 5678 9012 3456)" 
+      [(ngModel)]="cardNumber"
+      (input)="onCardNumberChange()"
+      [class.error]="hasCardNumberError()"
+      maxlength="19"
+    />
+    <div class="card-row">
+      <input 
+        placeholder="MM/AA" 
+        [(ngModel)]="cardExpiry"
+        (input)="onExpiryChange()"
+        [class.error]="hasExpiryError()"
+        maxlength="5"
+      />
+      <input 
+        placeholder="CVV" 
+        [(ngModel)]="cardCVV"
+        (input)="onCVVChange()"
+        [class.error]="hasCVVError()"
+        maxlength="4"
+        type="password"
+      />
+    </div>
   </div>
 
+  <!-- Formulario de PayPal -->
   <div *ngIf="method === 'paypal'" class="method-form">
-    <input placeholder="Correo PayPal" [(ngModel)]="paypalEmail" />
+    <h3>💰 Datos de PayPal</h3>
+    <input 
+      placeholder="correo@paypal.com" 
+      [(ngModel)]="paypalEmail"
+      [class.error]="hasEmailError()"
+      type="email"
+    />
+    <p class="info">Se abrirá PayPal para completar el pago</p>
   </div>
 
+  <!-- Formulario de Crypto -->
   <div *ngIf="method === 'crypto'" class="method-form">
-    <input placeholder="Dirección wallet" [(ngModel)]="walletAddress" />
+    <h3>₿ Datos de Wallet</h3>
+    <input 
+      placeholder="1A1zP1eP5QGefi2DMPTfTL5SLmv7DivfNa" 
+      [(ngModel)]="walletAddress"
+      [class.error]="hasWalletError()"
+    />
+    <p class="info">Compatible con Bitcoin, Ethereum y otras criptomonedas</p>
   </div>
 
-  <button (click)="pay()" [disabled]="loading">{{ loading ? 'Procesando...' : 'Pagar' }}</button>
+  <button 
+    (click)="pay()" 
+    [disabled]="loading"
+    [class.loading]="loading"
+  >
+    {{ loading ? '⏳ Procesando...' : '💳 Pagar S/' + amount }}
+  </button>
 
-  <div class="result" *ngIf="resultMessage">
-    {{ resultMessage }}
+  <!-- Resultado del pago -->
+  <div *ngIf="resultMessage" class="result" [class.success]="isSuccess" [class.error]="!isSuccess">
+    <div class="result-icon">
+      {{ isSuccess ? '✅' : '❌' }}
+    </div>
+    <div class="result-message">
+      {{ resultMessage }}
+    </div>
   </div>
 </div>
