@@ -1,11 +1,4 @@
-export interface PaymentResult {
-  success: boolean;
-  message: string;
-}
-
-export interface PaymentStrategy {
-  pay(amount: number, data: any): Promise<PaymentResult>;
-}// src/app/strategies/payment-strategy.ts
+import { PaymentData } from '../types/payment-data.types';
 
 export interface PaymentResult {
   success: boolean;
@@ -19,6 +12,6 @@ export interface PaymentStrategy {
    * @param data - Datos específicos del método de pago
    * @returns Promise que resuelve un PaymentResult
    */
-  pay(amount: number, data: any): Promise<PaymentResult>;
+  pay(amount: number, data: PaymentData): Promise<PaymentResult>;
 }
 
